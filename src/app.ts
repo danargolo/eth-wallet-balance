@@ -42,7 +42,16 @@ export function initApp() {
       history.slice(0, 5).forEach((tx) => {
         const txElement = document.createElement("p");
         txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor: 
-          ${ethers.utils.formatEther(tx.value)} ETH`;
+          ${ethers.utils.formatEther(tx.value)} ETH Data: ${new Date((tx.timestamp ?? 0) * 1000)
+            .toLocaleString('pt-BR', {
+              day: '2-digit', 
+              month: '2-digit', 
+              year: 'numeric', 
+              hour: '2-digit', 
+              minute: '2-digit', 
+              hour12: false
+            }
+          )}`;
         transactionsDisplay.appendChild(txElement);
       });
       
