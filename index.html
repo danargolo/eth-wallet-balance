@@ -15,6 +15,18 @@
       id="wallet-address"
       placeholder="Digite o endereço da carteira"
     />
+    <label for="network">Escolha a Rede:</label>
+    <select id="network">
+        <option value="homestead" selected>Homestead (Mainnet)</option>
+        <option value="goerli">Görli (Testnet)</option>
+        <option value="sepolia">Sepolia (Proof-of-Authority Testnet)</option>
+        <option value="arbitrum">Arbitrum Optimistic L2</option>
+        <option value="arbitrum-goerli">Arbitrum Optimistic L2 Testnet</option>
+        <option value="matic">Polygon Mainnet</option>
+        <option value="maticmum">Polygon Testnet</option>
+        <option value="optimism">Optimism Optimistic L2</option>
+        <option value="optimism-goerli">Optimism Optimistic L2 Testnet</option>
+    </select>
     <button id="check-balance">Consultar Saldo</button>
     <button id="check-transactions">Ver Transações</button>
     <p id="balance"></p>

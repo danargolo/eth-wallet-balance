@@ -1,21 +1,38 @@
 import { ethers } from "ethers";
 
-const API_KEY = import.meta.env.VITE_MATIC_API_KEY;
-const provider = new ethers.providers.EtherscanProvider("matic", API_KEY );
+const apiKeys: Record<string, string> = {
+  homestead: import.meta.env.VITE_ETH_API_KEY,
+  goerli: "SUA_API_KEY_GOERLI",
+  sepolia: "SUA_API_KEY_SEPOLIA",
+  arbitrum: "SUA_API_KEY_ARBITRUM",
+  "arbitrum-goerli": "SUA_API_KEY_ARBITRUM_GOERLI",
+  matic: import.meta.env.VITE_MATIC_API_KEY,
+  maticmum: "SUA_API_KEY_MATICMUM",
+  optimism: "SUA_API_KEY_OPTIMISM",
+  "optimism-goerli": "SUA_API_KEY_OPTIMISM_GOERLI",
+};
+
 
 export function initApp() {
-
+  
+  const selectNetwork = document.getElementById("network") as HTMLSelectElement;
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
   const balanceDisplay = document.getElementById("balance") as HTMLParagraphElement;
   const transactionsDisplay = document.getElementById("transactions") as HTMLDivElement;
   const checkBalanceButton = document.getElementById("check-balance") as HTMLButtonElement;
   const checkTransactionsButton = document.getElementById("check-transactions") as HTMLButtonElement;
+  
+  let provider = new ethers.providers.EtherscanProvider((selectNetwork.value), apiKeys[selectNetwork.value]);
+  
+  selectNetwork.addEventListener("change", () => {
+    const apiKey: string = apiKeys[selectNetwork.value];
+    provider = new ethers.providers.EtherscanProvider(selectNetwork.value, apiKey);
+  })
 
-
+  
   checkBalanceButton.addEventListener("click", async () => {
     const address = walletInput.value.trim();
-    console.log('clicou');
-    
+
     if (!ethers.utils.isAddress(address)) {
       balanceDisplay.textContent = "Endereço inválido!";
       return;
