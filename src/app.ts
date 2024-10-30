@@ -1,10 +1,8 @@
 import { ethers } from "ethers";
-import dotenv from "dotenv";
 
-dotenv.config();
+const API_KEY = import.meta.env.VITE_MATIC_API_KEY;
+const provider = new ethers.providers.EtherscanProvider("matic", API_KEY );
 
-const provider = new ethers.providers.EtherscanProvider("matic", process.env.MATIC_API_KEY);
-// console.log(process.env.MATIC_API_KEY)
 export function initApp() {
 
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
