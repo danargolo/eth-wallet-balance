@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { validateKey } from "./utils/validateKey";
 
 const apiKeys: Record<string, string> = {
   homestead: import.meta.env.VITE_ETH_API_KEY,
@@ -12,17 +13,31 @@ const apiKeys: Record<string, string> = {
   "optimism-goerli": "SUA_API_KEY_OPTIMISM_GOERLI",
 };
 
-
 export function initApp() {
   
   const selectNetwork = document.getElementById("network") as HTMLSelectElement;
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
   const balanceDisplay = document.getElementById("balance") as HTMLParagraphElement;
+  const errorDisplay = document.getElementById("error") as HTMLParagraphElement;
   const transactionsDisplay = document.getElementById("transactions") as HTMLDivElement;
   const checkBalanceButton = document.getElementById("check-balance") as HTMLButtonElement;
   const checkTransactionsButton = document.getElementById("check-transactions") as HTMLButtonElement;
   
   let provider = new ethers.providers.EtherscanProvider((selectNetwork.value), apiKeys[selectNetwork.value]);
+
+  walletInput.addEventListener("change", () => {
+    const address = walletInput.value.trim();
+
+    const validationResult = validateKey(address);
+    
+    if (!validationResult.valid) {
+      errorDisplay.textContent = validationResult.message ??  "Erro desconhecido.";
+      errorDisplay.style.display = "block";
+    } 
+    else {
+      errorDisplay.style.display = "none";
+    }
+  })
   
   selectNetwork.addEventListener("change", () => {
     const apiKey: string = apiKeys[selectNetwork.value];
@@ -31,12 +46,12 @@ export function initApp() {
 
   
   checkBalanceButton.addEventListener("click", async () => {
-    const address = walletInput.value.trim();
+    const address = walletInput.value.trim();    
 
-    if (!ethers.utils.isAddress(address)) {
-      balanceDisplay.textContent = "Endereço inválido!";
-      return;
-    }
+    // if (!ethers.utils.isAddress(address)) {
+    //   balanceDisplay.textContent = "Endereço inválido!";
+    //   return;
+    // }
     try {
       const balance = await provider.getBalance(address);
       balanceDisplay.textContent = `Saldo:${ethers.utils.formatEther(balance)} ETH`;
@@ -49,10 +64,10 @@ export function initApp() {
   checkTransactionsButton.addEventListener("click", async () => {
     const address = walletInput.value.trim();
 
-    if (!ethers.utils.isAddress(address)) {
-      transactionsDisplay.textContent = "Endereço inválido!";
-      return;
-    }
+    // if (!ethers.utils.isAddress(address)) {
+    //   transactionsDisplay.textContent = "Endereço inválido!";
+    //   return;
+    // }
     try {
       const history = await provider.getHistory(address);
       transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
@@ -63,7 +78,7 @@ export function initApp() {
             .toLocaleString('pt-BR', {
               day: '2-digit', 
               month: '2-digit', 
-              year: 'numeric', 
+              year: '2-digit', 
               hour: '2-digit', 
               minute: '2-digit', 
               hour12: false
