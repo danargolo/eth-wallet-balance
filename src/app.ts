@@ -1,6 +1,10 @@
 import { ethers } from "ethers";
+import dotenv from "dotenv";
 
-const provider = ethers.getDefaultProvider("mainnet");
+dotenv.config();
+
+const provider = new ethers.providers.EtherscanProvider("matic", process.env.MATIC_API_KEY);
+// console.log(process.env.MATIC_API_KEY)
 export function initApp() {
 
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
@@ -9,8 +13,11 @@ export function initApp() {
   const checkBalanceButton = document.getElementById("check-balance") as HTMLButtonElement;
   const checkTransactionsButton = document.getElementById("check-transactions") as HTMLButtonElement;
 
+
   checkBalanceButton.addEventListener("click", async () => {
     const address = walletInput.value.trim();
+    console.log('clicou');
+    
     if (!ethers.utils.isAddress(address)) {
       balanceDisplay.textContent = "Endereço inválido!";
       return;
