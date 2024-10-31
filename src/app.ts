@@ -3,18 +3,12 @@ import { validateKey } from "./utils/validateKey";
 
 const apiKeys: Record<string, string> = {
   homestead: import.meta.env.VITE_ETH_API_KEY,
-  goerli: "SUA_API_KEY_GOERLI",
-  sepolia: "SUA_API_KEY_SEPOLIA",
-  arbitrum: "SUA_API_KEY_ARBITRUM",
-  "arbitrum-goerli": "SUA_API_KEY_ARBITRUM_GOERLI",
+  arbitrum: import.meta.env.VITE_ARBITRUM_API_KEY,
   matic: import.meta.env.VITE_MATIC_API_KEY,
-  maticmum: "SUA_API_KEY_MATICMUM",
-  optimism: "SUA_API_KEY_OPTIMISM",
-  "optimism-goerli": "SUA_API_KEY_OPTIMISM_GOERLI",
+  optimism: import.meta.env.VITE_OPTMISM_API_KEY,
 };
 
 export function initApp() {
-  
   const selectNetwork = document.getElementById("network") as HTMLSelectElement;
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
   const balanceDisplay = document.getElementById("balance") as HTMLParagraphElement;
@@ -22,8 +16,11 @@ export function initApp() {
   const transactionsDisplay = document.getElementById("transactions") as HTMLDivElement;
   const checkBalanceButton = document.getElementById("check-balance") as HTMLButtonElement;
   const checkTransactionsButton = document.getElementById("check-transactions") as HTMLButtonElement;
-  
-  let provider = new ethers.providers.EtherscanProvider((selectNetwork.value), apiKeys[selectNetwork.value]);
+
+  let provider = new ethers.providers.EtherscanProvider(
+    selectNetwork.value,
+    apiKeys[selectNetwork.value]
+  );
 
   function getAddressInput(): string {
     return walletInput.value.trim();
@@ -33,40 +30,43 @@ export function initApp() {
     const address = getAddressInput();
 
     const validationResult = validateKey(address);
-    
+
     if (!validationResult.valid) {
-      errorDisplay.textContent = validationResult.message ??  "Erro desconhecido.";
+      errorDisplay.textContent =
+        validationResult.message ?? "Erro desconhecido.";
       errorDisplay.style.display = "block";
-    } 
-    else {
+    } else {
       errorDisplay.style.display = "none";
     }
-  })
-  
+  });
+
   selectNetwork.addEventListener("change", () => {
     const apiKey: string = apiKeys[selectNetwork.value];
-    provider = new ethers.providers.EtherscanProvider(selectNetwork.value, apiKey);
-  })
+    provider = new ethers.providers.EtherscanProvider(
+      selectNetwork.value,
+      apiKey
+    );
+  });
 
-  
   checkBalanceButton.addEventListener("click", async () => {
     const address = getAddressInput();
-   
+
     try {
       const balance = await provider.getBalance(address);
-      balanceDisplay.textContent = `Saldo:${ethers.utils.formatEther(balance)} ETH`;
-
+      balanceDisplay.textContent = `Saldo:${ethers.utils.formatEther(
+        balance
+      )} ETH`;
     } catch (error) {
       balanceDisplay.textContent = "Erro ao buscar o saldo.";
       console.error(error);
     }
   });
-  
-    let currentPage = 0;
-    const pageSize = 5;
-    let transactionHistory: ethers.providers.TransactionResponse[] = [];
 
-    async function loadTransactions(address: string) {
+  let currentPage = 0;
+  const pageSize = 5;
+  let transactionHistory: ethers.providers.TransactionResponse[] = [];
+
+  async function loadTransactions(address: string) {
     try {
       transactionHistory = await provider.getHistory(address);
       currentPage = 0;
@@ -81,57 +81,58 @@ export function initApp() {
     transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
 
     const start = currentPage * pageSize;
-    const paginatedTransactions = transactionHistory
-      .slice(start, start + pageSize);
+    const paginatedTransactions = transactionHistory.slice(
+      start,
+      start + pageSize
+    );
 
     paginatedTransactions.forEach((tx) => {
       const txElement = document.createElement("p");
       txElement.textContent = `De: ${tx.from} Para: ${tx.to} - Valor: 
         ${ethers.utils.formatEther(tx.value)} ETH 
-        Data: ${new Date((tx.timestamp ?? 0) * 1000).toLocaleString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
+        Data: ${new Date((tx.timestamp ?? 0) * 1000).toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
           hour12: false,
         })}`;
       transactionsDisplay.appendChild(txElement);
     });
 
-    createPaginationControls();
+    // createPaginationControls();
   }
 
-  function createPaginationControls() {
-    const paginationControls = document.createElement("div");
+  // function createPaginationControls() {
+  //   const paginationControls = document.createElement("div");
 
-    const prevButton = document.createElement("button");
-    prevButton.textContent = "Anterior";
-    prevButton.disabled = currentPage === 0;
-    prevButton.addEventListener("click", () => {
-      currentPage--;
-      renderTransactions();
-    });
+  //   const prevButton = document.createElement("button");
+  //   prevButton.textContent = "Anterior";
+  //   prevButton.disabled = currentPage === 0;
+  //   prevButton.addEventListener("click", () => {
+  //     currentPage--;
+  //     renderTransactions();
+  //   });
 
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "Próxima";
-    nextButton.disabled = (currentPage + 1) * pageSize >= transactionHistory.length;
-    nextButton.addEventListener("click", () => {
-      currentPage++;
-      renderTransactions();
-    });
+  //   const nextButton = document.createElement("button");
+  //   nextButton.textContent = "Próxima";
+  //   nextButton.disabled =
+  //     (currentPage + 1) * pageSize >= transactionHistory.length;
+  //   nextButton.addEventListener("click", () => {
+  //     currentPage++;
+  //     renderTransactions();
+  //   });
 
-    paginationControls.appendChild(prevButton);
-    paginationControls.appendChild(nextButton);
-    transactionsDisplay.appendChild(paginationControls);
-  }
+  //   paginationControls.appendChild(prevButton);
+  //   paginationControls.appendChild(nextButton);
+  //   transactionsDisplay.appendChild(paginationControls);
+  // }
 
-checkTransactionsButton.addEventListener("click", async () => {
-  const address = getAddressInput();
-  await loadTransactions(address);
-});
-
-
+  checkTransactionsButton.addEventListener("click", async () => {
+    const address = getAddressInput();
+    await loadTransactions(address);
+  });
 
   // checkTransactionsButton.addEventListener("click", async () => {
   //   const address = getAddressInput();
@@ -141,20 +142,20 @@ checkTransactionsButton.addEventListener("click", async () => {
   //     transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
   //     history.slice(0, 5).forEach((tx) => {
   //       const txElement = document.createElement("p");
-  //       txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor: 
+  //       txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor:
   //         ${ethers.utils.formatEther(tx.value)} ETH Data: ${new Date((tx.timestamp ?? 0) * 1000)
   //           .toLocaleString('pt-BR', {
-  //             day: '2-digit', 
-  //             month: '2-digit', 
-  //             year: '2-digit', 
-  //             hour: '2-digit', 
-  //             minute: '2-digit', 
+  //             day: '2-digit',
+  //             month: '2-digit',
+  //             year: '2-digit',
+  //             hour: '2-digit',
+  //             minute: '2-digit',
   //             hour12: false
   //           }
   //         )}`;
   //       transactionsDisplay.appendChild(txElement);
   //     });
-      
+
   //   } catch (error) {
   //     transactionsDisplay.textContent = "Erro ao buscar as transações.";
   //     console.error(error);
