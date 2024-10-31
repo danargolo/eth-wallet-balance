@@ -61,31 +61,103 @@ export function initApp() {
       console.error(error);
     }
   });
-  checkTransactionsButton.addEventListener("click", async () => {
-    const address = getAddressInput();
+  
+    let currentPage = 0;
+    const pageSize = 5;
+    let transactionHistory: ethers.providers.TransactionResponse[] = [];
 
+    async function loadTransactions(address: string) {
     try {
-      const history = await provider.getHistory(address);
-      transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
-      history.slice(0, 5).forEach((tx) => {
-        const txElement = document.createElement("p");
-        txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor: 
-          ${ethers.utils.formatEther(tx.value)} ETH Data: ${new Date((tx.timestamp ?? 0) * 1000)
-            .toLocaleString('pt-BR', {
-              day: '2-digit', 
-              month: '2-digit', 
-              year: '2-digit', 
-              hour: '2-digit', 
-              minute: '2-digit', 
-              hour12: false
-            }
-          )}`;
-        transactionsDisplay.appendChild(txElement);
-      });
-      
+      transactionHistory = await provider.getHistory(address);
+      currentPage = 0;
+      renderTransactions();
     } catch (error) {
       transactionsDisplay.textContent = "Erro ao buscar as transações.";
       console.error(error);
     }
-  });
+  }
+
+  function renderTransactions() {
+    transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
+
+    const start = currentPage * pageSize;
+    const paginatedTransactions = transactionHistory
+      .slice(start, start + pageSize);
+
+    paginatedTransactions.forEach((tx) => {
+      const txElement = document.createElement("p");
+      txElement.textContent = `De: ${tx.from} Para: ${tx.to} - Valor: 
+        ${ethers.utils.formatEther(tx.value)} ETH 
+        Data: ${new Date((tx.timestamp ?? 0) * 1000).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })}`;
+      transactionsDisplay.appendChild(txElement);
+    });
+
+    createPaginationControls();
+  }
+
+  function createPaginationControls() {
+    const paginationControls = document.createElement("div");
+
+    const prevButton = document.createElement("button");
+    prevButton.textContent = "Anterior";
+    prevButton.disabled = currentPage === 0;
+    prevButton.addEventListener("click", () => {
+      currentPage--;
+      renderTransactions();
+    });
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Próxima";
+    nextButton.disabled = (currentPage + 1) * pageSize >= transactionHistory.length;
+    nextButton.addEventListener("click", () => {
+      currentPage++;
+      renderTransactions();
+    });
+
+    paginationControls.appendChild(prevButton);
+    paginationControls.appendChild(nextButton);
+    transactionsDisplay.appendChild(paginationControls);
+  }
+
+checkTransactionsButton.addEventListener("click", async () => {
+  const address = getAddressInput();
+  await loadTransactions(address);
+});
+
+
+
+  // checkTransactionsButton.addEventListener("click", async () => {
+  //   const address = getAddressInput();
+
+  //   try {
+  //     const history = await provider.getHistory(address);
+  //     transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
+  //     history.slice(0, 5).forEach((tx) => {
+  //       const txElement = document.createElement("p");
+  //       txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor: 
+  //         ${ethers.utils.formatEther(tx.value)} ETH Data: ${new Date((tx.timestamp ?? 0) * 1000)
+  //           .toLocaleString('pt-BR', {
+  //             day: '2-digit', 
+  //             month: '2-digit', 
+  //             year: '2-digit', 
+  //             hour: '2-digit', 
+  //             minute: '2-digit', 
+  //             hour12: false
+  //           }
+  //         )}`;
+  //       transactionsDisplay.appendChild(txElement);
+  //     });
+      
+  //   } catch (error) {
+  //     transactionsDisplay.textContent = "Erro ao buscar as transações.";
+  //     console.error(error);
+  //   }
+  // });
 }
