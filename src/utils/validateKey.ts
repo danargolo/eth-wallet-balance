@@ -1,10 +1,5 @@
 import { ethers } from "ethers";
-
-interface ValidationResult {
-  valid: boolean;
-  message?: string;
-}
-
+import { ValidationResult } from "../types/transactionsTypes";
 
 function validateNotEmpty(key: string): ValidationResult | null {
   return key.trim().length > 0 
