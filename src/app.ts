@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 import { validateKey } from "./utils/validateKey";
+import { TransactionHistory } from "./types/transactionsTypes";
+import { renderTransactions } from "./utils/renderTransactions";
 
 const apiKeys: Record<string, string> = {
   homestead: import.meta.env.VITE_ETH_API_KEY,
@@ -8,12 +10,37 @@ const apiKeys: Record<string, string> = {
   optimism: import.meta.env.VITE_OPTMISM_API_KEY,
 };
 
+let transactionHistory: TransactionHistory = [];
+
+export function createPaginationControl(currentPage: number, pageSize: number, historyLength: number) {
+  const paginationControl = document.getElementById('pagination-controls') as HTMLDivElement;
+  const prevButton = document.getElementById('prevButton') as HTMLButtonElement;
+  const nextButton = document.getElementById('nextButton') as HTMLButtonElement;
+
+  if (historyLength > pageSize) {
+    paginationControl.style.display = "block";
+  } else {
+    paginationControl.style.display = "none";
+  }
+
+  prevButton.disabled = currentPage === 0;
+  prevButton.onclick = () => {
+    currentPage--;
+    renderTransactions(transactionHistory, currentPage);
+  };
+
+  nextButton.disabled = (currentPage + 1) * pageSize >= historyLength;
+  nextButton.onclick = () => {
+    currentPage++;
+    renderTransactions(transactionHistory, currentPage);
+  };
+};
+
 export function initApp() {
   const selectNetwork = document.getElementById("network") as HTMLSelectElement;
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
   const balanceDisplay = document.getElementById("balance") as HTMLParagraphElement;
   const errorDisplay = document.getElementById("error") as HTMLParagraphElement;
-  const transactionsDisplay = document.getElementById("transactions") as HTMLDivElement;
   const checkBalanceButton = document.getElementById("check-balance") as HTMLButtonElement;
   const checkTransactionsButton = document.getElementById("check-transactions") as HTMLButtonElement;
 
@@ -62,103 +89,18 @@ export function initApp() {
     }
   });
 
-  let currentPage = 0;
-  const pageSize = 5;
-  let transactionHistory: ethers.providers.TransactionResponse[] = [];
-
   async function loadTransactions(address: string) {
     try {
       transactionHistory = await provider.getHistory(address);
-      currentPage = 0;
-      renderTransactions();
+      renderTransactions(transactionHistory);
     } catch (error) {
-      transactionsDisplay.textContent = "Erro ao buscar as transações.";
+      errorDisplay.textContent = "Erro ao buscar as transações.";
       console.error(error);
     }
   }
-
-  function renderTransactions() {
-    transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
-
-    const start = currentPage * pageSize;
-    const paginatedTransactions = transactionHistory.slice(
-      start,
-      start + pageSize
-    );
-
-    paginatedTransactions.forEach((tx) => {
-      const txElement = document.createElement("p");
-      txElement.textContent = `De: ${tx.from} Para: ${tx.to} - Valor: 
-        ${ethers.utils.formatEther(tx.value)} ETH 
-        Data: ${new Date((tx.timestamp ?? 0) * 1000).toLocaleString("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}`;
-      transactionsDisplay.appendChild(txElement);
-    });
-
-    // createPaginationControls();
-  }
-
-  // function createPaginationControls() {
-  //   const paginationControls = document.createElement("div");
-
-  //   const prevButton = document.createElement("button");
-  //   prevButton.textContent = "Anterior";
-  //   prevButton.disabled = currentPage === 0;
-  //   prevButton.addEventListener("click", () => {
-  //     currentPage--;
-  //     renderTransactions();
-  //   });
-
-  //   const nextButton = document.createElement("button");
-  //   nextButton.textContent = "Próxima";
-  //   nextButton.disabled =
-  //     (currentPage + 1) * pageSize >= transactionHistory.length;
-  //   nextButton.addEventListener("click", () => {
-  //     currentPage++;
-  //     renderTransactions();
-  //   });
-
-  //   paginationControls.appendChild(prevButton);
-  //   paginationControls.appendChild(nextButton);
-  //   transactionsDisplay.appendChild(paginationControls);
-  // }
 
   checkTransactionsButton.addEventListener("click", async () => {
     const address = getAddressInput();
     await loadTransactions(address);
   });
-
-  // checkTransactionsButton.addEventListener("click", async () => {
-  //   const address = getAddressInput();
-
-  //   try {
-  //     const history = await provider.getHistory(address);
-  //     transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
-  //     history.slice(0, 5).forEach((tx) => {
-  //       const txElement = document.createElement("p");
-  //       txElement.textContent = `De: ${tx.from} Para: ${tx.to}- Valor:
-  //         ${ethers.utils.formatEther(tx.value)} ETH Data: ${new Date((tx.timestamp ?? 0) * 1000)
-  //           .toLocaleString('pt-BR', {
-  //             day: '2-digit',
-  //             month: '2-digit',
-  //             year: '2-digit',
-  //             hour: '2-digit',
-  //             minute: '2-digit',
-  //             hour12: false
-  //           }
-  //         )}`;
-  //       transactionsDisplay.appendChild(txElement);
-  //     });
-
-  //   } catch (error) {
-  //     transactionsDisplay.textContent = "Erro ao buscar as transações.";
-  //     console.error(error);
-  //   }
-  // });
 }
