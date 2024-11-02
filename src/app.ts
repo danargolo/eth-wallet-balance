@@ -1,16 +1,16 @@
 import { ethers } from "ethers";
 import { validateKey } from "./utils/validateKey";
-import { TransactionHistory } from "./types/transactionsTypes";
+import { TransactionHistoryType } from "./types/transactionsTypes";
 import { renderTransactions } from "./utils/renderTransactions";
 
-const apiKeys: Record<string, string> = {
-  homestead: import.meta.env.VITE_ETH_API_KEY,
-  arbitrum: import.meta.env.VITE_ARBITRUM_API_KEY,
-  matic: import.meta.env.VITE_MATIC_API_KEY,
-  optimism: import.meta.env.VITE_OPTMISM_API_KEY,
+const apiKeys: Record<string, string | undefined> = {
+  homestead: process.env.ETH_API_KEY ?? "",
+  arbitrum: process.env.ARBITRUM_API_KEY ?? "",
+  matic: process.env.MATIC_API_KEY ?? "",
+  optimism: process.env.OPTMISM_API_KEY ?? "",
 };
 
-let transactionHistory: TransactionHistory = [];
+let transactionHistory: TransactionHistoryType = [];
 
 export function createPaginationControl(currentPage: number, pageSize: number, historyLength: number) {
   const paginationControl = document.getElementById('pagination-controls') as HTMLDivElement;
@@ -68,7 +68,7 @@ export function initApp() {
   });
 
   selectNetwork.addEventListener("change", () => {
-    const apiKey: string = apiKeys[selectNetwork.value];
+    const apiKey: string | undefined = apiKeys[selectNetwork.value];
     provider = new ethers.providers.EtherscanProvider(
       selectNetwork.value,
       apiKey

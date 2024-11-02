@@ -1,0 +1,8 @@
+#tittle {
+  color: #2D3436;
+}
+
+#description {
+  display: flex;
+  justify-content: center;
+}

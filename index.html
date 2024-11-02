@@ -6,10 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <title>Consulta de Saldo e Transações - Ethereum</title>
+    <title>Wallet Balance - Consulta de Saldo e Transações</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>Consulta de Saldo e Transações</h1>
+    <h1>Wallet Balance</h1>
+    <h3 id="description">Escolha a rede de sua preferência, insira o endereço da carteira e acompanhe saldo e histórico de transações com facilidade.</h3>
     <input
       type="text"
       id="wallet-address"
@@ -18,14 +20,10 @@
     <label for="network">Escolha a Rede:</label>
     <select id="network">
         <option value="homestead" selected>Homestead (Mainnet)</option>
-        <!-- <option value="goerli">Görli (Testnet)</option> -->
         <option value="sepolia">Sepolia (Proof-of-Authority Testnet)</option>
         <option value="arbitrum">Arbitrum Optimistic L2</option>
-        <!-- <option value="arbitrum-goerli">Arbitrum Optimistic L2 Testnet</option> -->
         <option value="matic">Polygon (Mainnet)</option>
-        <!-- <option value="maticmum">Polygon Testnet</option> -->
         <option value="optimism">Optimism Optimistic L2</option>
-        <!-- <option value="optimism-goerli">Optimism Optimistic L2 Testnet</option> -->
     </select>
     <button id="check-balance">Consultar Saldo</button>
     <button id="check-transactions">Ver Transações</button>

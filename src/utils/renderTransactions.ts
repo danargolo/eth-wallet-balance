@@ -1,8 +1,8 @@
-import { createPaginationControl } from "../app";
-import { TransactionHistory } from "../types/transactionsTypes";
-import { ethers } from "ethers";
+import { ethers } from 'ethers'
+import { createPaginationControl } from '../app';
+import { TransactionHistoryType } from "../types/transactionsTypes";
 
-export function renderTransactions(transactionHistory: TransactionHistory, currentPage: number = 0) {
+export function renderTransactions(transactionHistory: TransactionHistoryType, currentPage: number = 0) {
   const PAGE_SIZE = 5;
   const HISTORY_LENGTH = transactionHistory.length;
 

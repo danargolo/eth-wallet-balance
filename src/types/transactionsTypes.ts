@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-export type TransactionHistory = ethers.providers.TransactionResponse[];
+export type TransactionHistoryType = ethers.providers.TransactionResponse[];
 
 export interface ValidationResult {
   valid: boolean;
