@@ -18,7 +18,7 @@ const apiKeys: Record<string, NetworkConfig> = {
   },
   arbitrum: {
     apiKey: process.env.ARBITRUM_API_KEY,
-    symbol: "ARB",
+    symbol: "ETH",
   },
   matic: {
     apiKey: process.env.MATIC_API_KEY,
@@ -26,7 +26,7 @@ const apiKeys: Record<string, NetworkConfig> = {
   },
   optimism: {
     apiKey: process.env.OPTMISM_API_KEY,
-    symbol: "OP",
+    symbol: "ETH",
   },
 };
 
