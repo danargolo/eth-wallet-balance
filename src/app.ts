@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { validateKey } from "./utils/validateKey";
 import { TransactionHistoryType } from "./types/transactionsTypes";
 import { renderTransactions } from "./utils/renderTransactions";
+import { debounce } from "./utils/debounce";
 
 interface NetworkConfig {
   apiKey?: string;
@@ -57,6 +58,7 @@ export function createPaginationControl(currentPage: number, pageSize: number, h
 };
 
 export function initApp() {
+  const DEBOUNCE_CALL_API = 1000;
   const selectNetwork = document.getElementById("network") as HTMLSelectElement;
   const walletInput = document.getElementById("wallet-address") as HTMLInputElement;
   const balanceDisplay = document.getElementById("balance") as HTMLParagraphElement;
@@ -94,9 +96,8 @@ export function initApp() {
     : new ethers.providers.EtherscanProvider(selectNetwork.value);
   });
 
-  checkBalanceButton.addEventListener("click", async () => {
-    const address = getAddressInput();
-
+  
+  async function loadBalance(address: string) {
     try {
       const balance = await provider.getBalance(address);
       balanceDisplay.textContent = `${ethers.utils.formatEther(
@@ -106,8 +107,8 @@ export function initApp() {
       errorDisplay.textContent = "Erro ao buscar o saldo.";
       console.error(error);
     }
-  });
-
+  }
+  
   async function loadTransactions(address: string) {
     try {
       transactionHistory = await provider.getHistory(address);
@@ -117,9 +118,14 @@ export function initApp() {
       console.error(error);
     }
   }
+  
+  checkBalanceButton.addEventListener("click", debounce(async () => {
+    const address = getAddressInput();
+    await loadBalance(address);
+  }, DEBOUNCE_CALL_API));
 
-  checkTransactionsButton.addEventListener("click", async () => {
+  checkTransactionsButton.addEventListener("click", debounce(async () => {
     const address = getAddressInput();
     await loadTransactions(address);
-  });
+  }, DEBOUNCE_CALL_API));
 }
