@@ -1,25 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-
-scale=1.0"
+      content="width=device-width, initial-scale=1.0"
     />
-    <title>Consulta de Saldo e Transações - Ethereum</title>
+    <title>Wallet Balance - Consulta de Saldo e Transações</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>Consulta de Saldo e Transações</h1>
-    <input
-      type="text"
-      id="wallet-address"
-      placeholder="Digite o endereço da carteira"
-    />
-    <button id="check-balance">Consultar Saldo</button>
-    <button id="check-transactions">Ver Transações</button>
-    <p id="balance"></p>
-    <div id="transactions"></div>
-    <script src="bundle.js"></script>
+    <div class="container">
+      <h1>ETH Wallet Balance</h1>
+      <h3 id="description">Insira o endereço da carteira, escolha a rede de sua preferência e acompanhe o saldo e histórico de transações com facilidade.</h3>
+
+      <div class="search-form">
+        <div class="input-group">
+          <label for="wallet">Endereço da Carteira:</label>
+          <input 
+            type="text" 
+            id="wallet-address"
+            placeholder="0x..." />
+        </div>
+
+        <div class="input-group">
+          <label for="network">Escolha a Rede:</label>
+          <select id="network">
+            <option value="homestead" selected>Homestead (Mainnet)</option>
+            <option value="sepolia">Sepolia (Proof-of-Authority Testnet)</option>
+            <option value="arbitrum">Arbitrum Optimistic L2</option>
+            <option value="matic">Polygon (Mainnet)</option>
+            <option value="optimism">Optimism Optimistic L2</option>
+          </select>
+        </div>
+
+        <div class="button-group">
+          <button id="check-balance">Consultar Saldo</button>
+          <button id="check-transactions">Ver Transações</button>
+        </div>
+      </div>
+
+      <div class="error-message" id="error">
+      </div>
+
+      <div class="results">
+        <div id="balance-result">
+          <h2>Saldo</h2>
+          <div id="balance"></div>
+        </div>
+
+        <div id="transactions-result">
+          <div id="transactions"></div>
+          <div id="pagination-controls">
+            <button id="prevButton">Anterior</button>
+            <button id="nextButton">Próximo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <p>
+        2024 - Desenvolvido por 
+        <a href="https://www.linkedin.com/in/danargolo" target="_blank" style="text-decoration: none; color: #62688f;">
+          Dan Argolo.
+        </a>
+      </p>
+    </div>
+    <script type="module" src="src/index.ts"></script>
   </body>
 </html>
