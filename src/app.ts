@@ -33,7 +33,7 @@ const apiKeys: Record<string, NetworkConfig> = {
 let transactionHistory: TransactionHistoryType = [];
 
 export function createPaginationControl(currentPage: number, pageSize: number, historyLength: number) {
-  const paginationControl = document.getElementById('pagination-controls') as HTMLDivElement;
+  const paginationControl = document.getElementById('transactions-result') as HTMLDivElement;
   const prevButton = document.getElementById('prevButton') as HTMLButtonElement;
   const nextButton = document.getElementById('nextButton') as HTMLButtonElement;
 
@@ -99,7 +99,7 @@ export function initApp() {
 
     try {
       const balance = await provider.getBalance(address);
-      balanceDisplay.textContent = `Saldo: ${ethers.utils.formatEther(
+      balanceDisplay.textContent = `${ethers.utils.formatEther(
         balance
       )} ${apiKeys[selectNetwork.value].symbol}`;
     } catch (error) {

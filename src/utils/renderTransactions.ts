@@ -8,7 +8,7 @@ export function renderTransactions(transactionHistory: TransactionHistoryType, c
 
   const transactionsDisplay = document.getElementById("transactions") as HTMLDivElement;
 
-  transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
+  transactionsDisplay.innerHTML = "<h2>Últimas Transações:</h2>";
 
   const start = currentPage * PAGE_SIZE;
   const paginatedTransactions = transactionHistory.slice(
