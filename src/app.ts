@@ -103,7 +103,7 @@ export function initApp() {
         balance
       )} ${apiKeys[selectNetwork.value].symbol}`;
     } catch (error) {
-      balanceDisplay.textContent = "Erro ao buscar o saldo.";
+      errorDisplay.textContent = "Erro ao buscar o saldo.";
       console.error(error);
     }
   });
