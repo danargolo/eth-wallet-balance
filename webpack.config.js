@@ -33,9 +33,6 @@ export default {
     clean: true,
   },
   plugins: [
-    new Dotenv({
-      systemvars: true
-    }),
     new HtmlWebpackPlugin({
       template: "./index.html",
     }),
