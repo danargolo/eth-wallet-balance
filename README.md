@@ -19,8 +19,8 @@ O **Ethereum Wallet Balance** é uma aplicação web que permite aos usuários e
 
 1. Clone o repositório(SSH):
    ```bash
-   git clone git@github.com:danargolo/eth-walltet-balance.git
-   cd eth-walltet-balance
+   git clone git@github.com:danargolo/eth-wallet-balance.git
+   cd eth-wallet-balance
    ```
 2. Instale as dependências: 
     ```bash
