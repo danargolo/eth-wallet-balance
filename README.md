@@ -49,10 +49,10 @@ O **Ethereum Wallet Balance** é uma aplicação web que permite aos usuários e
 - Visualize as Transações: Clique no botão "Ver Transações" para acessar o histórico das últimas transações da carteira.
 
 ## Futuras Features/Fixes
-- **Validação e Desativação de Botões:** Implementar lógica para desabilitar os botões "Consultar Saldo" e "Consultar Transações" até que um endereço de carteira válido seja inserido.
-- **Adicionar Loader:** Implementar um loader que será exibido enquanto a aplicação aguarda o retorno da API.
-- **Corrigir Símbolos nas Transações:** Consertar a exibição dos símbolos das moedas nas transações.
-- **Tratamento de Erros Melhorado:** Adicionar mensagens de erro mais especificas e suporte a casos de falhas na rede.
-- **Filtros de Transações:** Implementar funcionalidades que permitam filtrar transações por data ou valor.
-- **Armazenamento de Endereços Favoritos:** Permitir que os usuários salvem endereços favoritos para consultas rápidas.
+- [ ] **Validação e Desativação de Botões:** Implementar lógica para desabilitar os botões "Consultar Saldo" e "Consultar Transações" até que um endereço de carteira válido seja inserido.
+- [ ] **Adicionar Loader:** Implementar um loader que será exibido enquanto a aplicação aguarda o retorno da API.
+- [ ] **Corrigir Símbolos nas Transações:** Consertar a exibição dos símbolos das moedas nas transações.
+- [ ] **Tratamento de Erros Melhorado:** Adicionar mensagens de erro mais especificas e suporte a casos de falhas na rede.
+- [ ] **Filtros de Transações:** Implementar funcionalidades que permitam filtrar transações por data ou valor.
+- [ ] **Armazenamento de Endereços Favoritos:** Permitir que os usuários salvem endereços favoritos para consultas rápidas.
 
